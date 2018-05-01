@@ -1,0 +1,102 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.Board {
+  position: relative;
+}
+
+.EditorDetails {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 33%;
+  border: black solid 1px;
+}
+
+.EditorMenu {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 32px;
+  width: 40%;
+  border: black solid 1px;
+}
+
+.GameOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.Space {
+  display: inline-block;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+}
+
+.Space-n {
+  background-image: url('images/spaces/n.png');
+}
+.Space-debug {
+  background: red;
+  border: black solid 1px;
+}
+
+.Player0 {
+  display: inline-block;
+  position: absolute;
+  z-index: 100;
+  left: 8px;
+  top: 8px;
+}
+.Player1 {
+  display: inline-block;
+  position: absolute;
+  z-index: 100;
+  right: 8px;
+  top: 8px;
+}
+.Player2 {
+  display: inline-block;
+  position: absolute;
+  z-index: 100;
+  left: 8px;
+  bottom: 8px;
+}
+.Player3 {
+  display: inline-block;
+  position: absolute;
+  z-index: 100;
+  right: 8px;
+  bottom: 8px;
+}
+
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
