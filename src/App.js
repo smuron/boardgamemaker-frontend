@@ -16,14 +16,14 @@ class App extends Component {
   }
 
   componentWillMount() {
-    GameStore.subscribe(this.updateMessages.bind(this));
+    GameStore.subscribe(this.updateGameState.bind(this));
   }
 
   componentWillUnmount() {
-    GameStore.unsubscribe(this.updateMessages.bind(this));
+    GameStore.unsubscribe(this.updateGameState.bind(this));
   }
 
-  updateMessages() {
+  updateGameState() {
       this.setState(GameStore.getGameState());
   }
 

@@ -1,5 +1,6 @@
 import cfg from './AppConfig'
 import openSocket from 'socket.io-client';
+import axios from 'axios'
 
 var EventEmitter = require('events').EventEmitter;
  
@@ -8,7 +9,92 @@ var emitter = new EventEmitter();
 var gameState = null;
 var socket = null;
 
+// TODO: not half-A this
+let DEBUG_AUTH_IMPLEMENT_ME = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lIiwiaWF0IjoxNTI1Mzc2NjgzLCJleHAiOjE1MzEzNzY2ODN9.BXFx_Xrcvi--nAe8qgdwcKmQaU4etWDnkjHL-RLC1LI";
+axios.defaults.headers.common['Authorization'] = DEBUG_AUTH_IMPLEMENT_ME;
+
 export default {
+
+	editorFunctions: {
+		createNew: function() {
+			let newBoard = {
+				width: 640,
+				height: 480,
+				spaces: {}
+			};
+
+			axios.post(cfg.SERVER + "/api/board", newBoard)
+				.then(function(resp) {
+					console.log(resp,'resp from newBoard')
+					gameState.board = resp.data;
+					emitter.emit("update");
+				})
+				.catch(function(err) {
+					console.log(err,'while trying to create a new board')
+				});
+		},
+		saveCurrent: function() {
+			// v. trusting to start
+			// probably could just do upsert endpoint and look for id on server side
+			axios.post(cfg.SERVER + "/api/board/" + gameState.board.id, gameState.board)
+				.then(function(resp) {
+					console.log(resp,'resp from saveCurrent')
+				})
+				.catch(function(err) {
+					console.log(err,'while trying to saveCurrent')
+				});
+		},
+		loadBoard: function(boardId) {
+			axios.get(cfg.SERVER + "/api/board/" + boardId)
+				.then(function(resp) {
+					console.log(resp,'resp from syncBoard');
+					gameState.board = resp.data;
+					emitter.emit("update");
+				})
+				.catch(function(err) {
+					console.log(err,'while trying to syncBoard')
+				});
+		},
+		getBoardList: function() {
+			axios.get(cfg.SERVER + "/api/board")
+				.then(function(resp) {
+					console.log(resp,'resp from getBoardList')
+					gameState.boardList = resp.data;
+					emitter.emit("update");
+				})
+				.catch(function(err) {
+					console.log(err,'while trying to getBoardList')
+				});
+		},
+
+
+		// space editing
+		addSpace: function() {
+			let x, xInt, spaces
+			let maxId = -1;
+			spaces = gameState.board.spaces
+			for (x in Object.keys(spaces)) {
+				xInt = parseInt(x)
+				if (xInt > maxId) {
+					maxId = xInt;
+				}
+			}
+
+			spaces[maxId+1] = {
+				t: 'debug',
+				x: gameState.board.width / 2,
+				y: gameState.board.height / 2,
+				n: [maxId]
+			}
+
+			console.log(maxId+1,spaces);
+			emitter.emit("update");
+		},
+		selectSpace: function(spaceId) {
+			gameState.editor.selected = spaceId;
+			emitter.emit("update");
+		}
+	},
 
 	initialize: function() {
 		// DEBUG function, should accept state from server instead...
@@ -40,7 +126,8 @@ export default {
 			},
 
 			board: {
-				width: 640,
+				id: 'dummy',
+				width: 480,
 				height: 480,
 				spaces: {
 					0: {

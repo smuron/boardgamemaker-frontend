@@ -12,25 +12,39 @@ class EditorDetails extends Component {
   }
 
   componentWillMount() {
-    GameStore.subscribe(this.updateMessages.bind(this));
+    GameStore.subscribe(this.updateGameState.bind(this));
   }
 
   componentWillUnmount() {
-    GameStore.unsubscribe(this.updateMessages.bind(this));
+    GameStore.unsubscribe(this.updateGameState.bind(this));
   }
 
-  updateMessages() {
+  updateGameState() {
       this.setState({
           gameState: GameStore.getGameState()
       });
   }
 
   render() {
+    if (this.state.gameState.editor.selected == null) {
+      return (
+        <div className="EditorDetails">
+          (nothing selected)
+        </div>
+      );
+    }
+
+    let spaceInfo = this.state.gameState.board.spaces[this.state.gameState.editor.selected];
+
     return (
-      <div className="EditorDetails">
-        Placeholder for EditorDetails
-      </div>
-    );
+        <div className="EditorDetails">
+          Id: <input type="text" value={this.state.gameState.editor.selected} /><br/>
+          Type: <input type="text" value={spaceInfo.t} /><br/>
+          X: <input type="text" value={spaceInfo.x} /><br/>
+          Y: <input type="text" value={spaceInfo.y} /><br/>
+          Links: <input type="text" value={spaceInfo.n.join(',')} />
+        </div>
+      );
   }
 }
 

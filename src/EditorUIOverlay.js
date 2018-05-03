@@ -16,14 +16,14 @@ class EditorUIOverlay extends Component {
   }
 
   componentWillMount() {
-    GameStore.subscribe(this.updateMessages.bind(this));
+    GameStore.subscribe(this.updateGameState.bind(this));
   }
 
   componentWillUnmount() {
-    GameStore.unsubscribe(this.updateMessages.bind(this));
+    GameStore.unsubscribe(this.updateGameState.bind(this));
   }
 
-  updateMessages() {
+  updateGameState() {
       this.setState({
           gameState: GameStore.getGameState()
       });
@@ -48,7 +48,7 @@ class EditorUIOverlay extends Component {
     if (editor.showMenu) {
       shownElements.push(<EditorMenu key='EditorMenu'></EditorMenu>);
     }
-    if (editor.showDetails !== -1) {
+    if (editor.selected !== null) {
       shownElements.push(<EditorDetails key='EditorDetails'></EditorDetails>);
     }
     if (editor.showOutput) {
