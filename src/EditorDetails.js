@@ -25,8 +25,13 @@ class EditorDetails extends Component {
       });
   }
 
+  detailsFieldChange(key, field, ev) {
+    GameStore.editorFunctions.updateSpace(key, field, ev.target.value);
+  }
+
   render() {
-    if (this.state.gameState.editor.selected == null) {
+    let selectedId = this.state.gameState.editor.selected;
+    if (selectedId == null) {
       return (
         <div className="EditorDetails">
           (nothing selected)
@@ -34,15 +39,25 @@ class EditorDetails extends Component {
       );
     }
 
-    let spaceInfo = this.state.gameState.board.spaces[this.state.gameState.editor.selected];
+    let spaceInfo = this.state.gameState.board.spaces[selectedId];
 
     return (
         <div className="EditorDetails">
-          Id: <input type="text" value={this.state.gameState.editor.selected} /><br/>
-          Type: <input type="text" value={spaceInfo.t} /><br/>
-          X: <input type="text" value={spaceInfo.x} /><br/>
-          Y: <input type="text" value={spaceInfo.y} /><br/>
-          Links: <input type="text" value={spaceInfo.n.join(',')} />
+          Id: <input type="text" 
+                     onChange={this.detailsFieldChange.bind(this, selectedId, 'id')}
+                     value={this.state.gameState.editor.selected} /><br/>
+          Type: <input type="text" 
+                      onChange={this.detailsFieldChange.bind(this, selectedId, 't')}
+                      value={spaceInfo.t} /><br/>
+          X: <input type="text" 
+                      onChange={this.detailsFieldChange.bind(this, selectedId, 'x')}
+                      value={spaceInfo.x} /><br/>
+          Y: <input type="text" 
+                      onChange={this.detailsFieldChange.bind(this, selectedId, 'y')}
+                      value={spaceInfo.y} /><br/>
+          Links: <input type="text" 
+                        onChange={this.detailsFieldChange.bind(this, selectedId, 'n')}
+                        value={spaceInfo.n.join(',')} />
         </div>
       );
   }

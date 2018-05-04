@@ -13,7 +13,8 @@ var socket = null;
 let DEBUG_AUTH_IMPLEMENT_ME = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lIiwiaWF0IjoxNTI1Mzc2NjgzLCJleHAiOjE1MzEzNzY2ODN9.BXFx_Xrcvi--nAe8qgdwcKmQaU4etWDnkjHL-RLC1LI";
 axios.defaults.headers.common['Authorization'] = DEBUG_AUTH_IMPLEMENT_ME;
 
-export default {
+var StoreAPI;
+StoreAPI = {
 
 	editorFunctions: {
 		createNew: function() {
@@ -88,6 +89,21 @@ export default {
 			}
 
 			console.log(maxId+1,spaces);
+			emitter.emit("update");
+		},
+		updateSpace: function(id, field, value) {
+			if (field == 'n') {
+				value = value.split(',');
+				gameState.board.spaces[id].n = value;
+			} else if (field != 'id') {
+				gameState.board.spaces[id][field] = value;
+
+			} else {
+				console.log('unimplemented id change in updateSpace',id,field,value);
+			}
+
+			// TODO: save? or force manual?
+			// StoreAPI.saveCurrent()
 			emitter.emit("update");
 		},
 		selectSpace: function(spaceId) {
@@ -228,3 +244,5 @@ export default {
 		emitter.emit('update');
 	}
 }
+
+export default StoreAPI;

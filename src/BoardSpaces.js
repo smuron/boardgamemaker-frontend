@@ -36,7 +36,7 @@ class Board extends Component {
     }
   }
 
-  debugRenderSpace(s,board,k) {
+  renderSpace(s,board,k) {
     // TODO: precalc this 
     let rawCoords = {
       left: (100.0*s.x/board.width),
@@ -62,6 +62,9 @@ class Board extends Component {
         let linkedId = s.n[i];
         console.log('drawing arrows',linkedId);
         let linkedSpace = board.spaces[linkedId];
+        if (linkedSpace == null) {
+          continue;
+        }
         let linkedCoords = {
           left: 100.0*linkedSpace.x/board.width,
           top: 100.0*linkedSpace.y/board.height,
@@ -111,7 +114,7 @@ class Board extends Component {
     let board = this.state.gameState.board;
 
     for (let k in Object.keys(board.spaces)) {
-      gameSpaces.push(this.debugRenderSpace(board.spaces[k],board,k));
+      gameSpaces.push(this.renderSpace(board.spaces[k],board,k));
     }
 
     let style = {
