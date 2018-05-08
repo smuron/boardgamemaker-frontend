@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import Lobby from './Lobby.js'
 import Board from './Board.js';
 import EditorBoard from './EditorBoard.js';
 import GameStore from './GameStore.js';
@@ -27,6 +28,10 @@ class App extends Component {
       this.setState(GameStore.getGameState());
   }
 
+  goToLobby() {
+    GameStore.updateGameState('AppGoto', 'lobby');
+  }
+
   goToGame() {
     GameStore.updateGameState('AppGoto', 'game');
   }
@@ -50,11 +55,17 @@ class App extends Component {
             <Board />
           </div>
         );
+      case 'lobby':
+        return (
+          <div className="App">
+            <Lobby />
+          </div>
+        );
       case 'title':
       default:
         return (
           <div className="App">
-            <button onClick={this.goToGame}>Game</button> <button onClick={this.goToEditor}>Editor</button>
+            <button onClick={this.goToLobby}>Play</button> <button onClick={this.goToEditor}>Editor</button>
           </div>
         );  
     }

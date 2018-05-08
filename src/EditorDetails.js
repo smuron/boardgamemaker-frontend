@@ -55,9 +55,10 @@ class EditorDetails extends Component {
           Y: <input type="text" 
                       onChange={this.detailsFieldChange.bind(this, selectedId, 'y')}
                       value={spaceInfo.y} /><br/>
-          Links: <input type="text" 
+          Out: <input type="text" 
                         onChange={this.detailsFieldChange.bind(this, selectedId, 'n')}
                         value={spaceInfo.n.join(',')} />
+          In: {spaceInfo.p.join(',')}
         </div>
       );
   }

@@ -28,6 +28,7 @@ StoreAPI = {
 				.then(function(resp) {
 					console.log(resp,'resp from newBoard')
 					gameState.board = resp.data;
+					StoreAPI.editorFunctions.updatePreviousLists();
 					emitter.emit("update");
 				})
 				.catch(function(err) {
@@ -50,6 +51,7 @@ StoreAPI = {
 				.then(function(resp) {
 					console.log(resp,'resp from syncBoard');
 					gameState.board = resp.data;
+					StoreAPI.editorFunctions.updatePreviousLists();
 					emitter.emit("update");
 				})
 				.catch(function(err) {
@@ -89,6 +91,8 @@ StoreAPI = {
 			}
 
 			console.log(maxId+1,spaces);
+
+			StoreAPI.editorFunctions.updatePreviousLists();
 			emitter.emit("update");
 		},
 		updateSpace: function(id, field, value) {
@@ -104,7 +108,32 @@ StoreAPI = {
 
 			// TODO: save? or force manual?
 			// StoreAPI.saveCurrent()
+			StoreAPI.editorFunctions.updatePreviousLists();
 			emitter.emit("update");
+		},
+		updatePreviousLists: function() {
+			let spaces = gameState.board.spaces;
+
+			let entryLists = {};
+
+			for (let i in Object.keys(spaces)) {
+				let s = spaces[i];
+				let n = s.n;
+				if (!entryLists[i]) {
+					entryLists[i] = [];
+				}
+				for (let j = 0; j < n.length; j++) {
+					let e = n[j]
+					if (!entryLists[e]) {
+						entryLists[e] = []
+					}
+					entryLists[e].push(i);
+				}
+			}
+			for (let i in Object.keys(spaces)) {
+				spaces[i].p = entryLists[i];
+			}
+			// emitter.emit("update");
 		},
 		selectSpace: function(spaceId) {
 			gameState.editor.selected = spaceId;
@@ -148,8 +177,8 @@ StoreAPI = {
 				spaces: {
 					0: {
 						t: 'debug',
-						x: 0,
-						y: 0,
+						x: 64,
+						y: 64,
 						n: [1]
 					},
 					1: {
@@ -210,7 +239,7 @@ StoreAPI = {
 				showMenu: true
 			}
 		}
-
+		StoreAPI.editorFunctions.updatePreviousLists();
 		emitter.emit('update');
 		// socket = openSocket(cfg.SERVER);
 	},
@@ -220,6 +249,19 @@ StoreAPI = {
 			this.initialize();
 		}
 		return gameState;
+	},
+
+	// use a subobject to hold this sort of thing?
+	refreshLobby: function() {
+		axios.get(cfg.SERVER + "/api/game")
+				.then(function(resp) {
+					console.log(resp,'resp from refreshLobby')
+					gameState.lobby = resp.data;
+					emitter.emit("update");
+				})
+				.catch(function(err) {
+					console.log(err,'refreshLobby');
+				});
 	},
 
 	subscribe: function(cb) {
